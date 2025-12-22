@@ -47,9 +47,32 @@ class KindleToPDFApp:
         self.pick_dir_dialog = ft.FilePicker(on_result=self.on_dir_result)
         self.page.overlay.append(self.pick_dir_dialog)
         
+        def pick_dir_native(e):
+            # WebブラウザモードではFletのFilePicker(ディレクトリ)が動作しないため、
+            # AppleScriptを使ってネイティブのフォルダ選択ダイアログを表示する
+            try:
+                import subprocess
+                # System Eventsをアクティブにして最前面に出す
+                script = '''
+                tell application "System Events"
+                    activate
+                    set p to POSIX path of (choose folder with prompt "出力先フォルダを選択してください")
+                end tell
+                return p
+                '''
+                res = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, check=True)
+                path = res.stdout.strip()
+                if path:
+                    self.output_dir.value = path
+                    self.page.update()
+            except Exception as err:
+                 print(f"Directory pick failed: {err}")
+                 self.status_text.value = f"フォルダ選択エラー: {err}"
+                 self.page.update()
+
         pick_dir_btn = ft.IconButton(
             icon=ft.Icons.FOLDER_OPEN,
-            on_click=lambda _: self.pick_dir_dialog.get_directory_path(),
+            on_click=pick_dir_native,
             tooltip="出力先を選択"
         )
 

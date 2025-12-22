@@ -9,4 +9,5 @@ fi
 
 echo "Starting KindleToPDF Web App..."
 echo "Press Ctrl+C to stop."
+export PYTHONPATH=src
 uv run python -m kindle_to_pdf.web
