@@ -1,0 +1,22 @@
+[project]
+name = "kindle-to-pdf"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "flet[all]>=0.28.3",
+    "ocrmypdf>=16.12.0",
+    "pillow>=12.0.0",
+    "pyobjc-framework-quartz>=12.1",
+]
+
+[project.scripts]
+kindle2pdf = "kindle_to_pdf.__main__:main"
+kindle2pdf-gui = "kindle_to_pdf.app:main"
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.17.0",
+    "pytest>=9.0.2",
+]
