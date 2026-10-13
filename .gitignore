@@ -1,10 +1,51 @@
-# Python-generated files
+# Python-generated files / package build
 __pycache__/
 *.py[oc]
 build/
 dist/
 wheels/
 *.egg-info
+.venv/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
 
-# Virtual environments
-.venv
+# macOS/editor
+.DS_Store
+.AppleDouble
+.idea/
+.vscode/
+
+# Local credentials / profiles / secrets
+.env
+.env.*
+!.env.example
+credentials.json
+token.json
+client_secret*.json
+*oauth-token*.json
+*.pem
+*.key
+
+# Kindle/Drive personal data; never commit real digital purchases
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+*.pdf
+*.epub
+*.azw
+*.azw3
+*.mobi
+*.kfx
+*.log
+kindle_exports/
+kindle-captures/
+screenshots/
+data/
+outputs/
+tmp/
