@@ -20,6 +20,8 @@ jobs:
         run: uvx --from ruff==0.14.10 ruff check .
       - name: Python syntax
         run: python -m compileall -q src
+      - name: Pure domain tests (no macOS dependencies)
+        run: uvx --from pytest==9.0.2 pytest -q tests/test_library_scan.py tests/test_sync_plan.py
 
   tests-macos:
     name: pytest-macos
