@@ -1,0 +1,35 @@
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: lint-and-syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Ruff
+        run: uvx --from ruff==0.14.10 ruff check .
+      - name: Python syntax
+        run: python -m compileall -q src
+
+  tests-macos:
+    name: pytest-macos
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - name: Install Python
+        run: uv python install 3.12
+      - name: Install dependencies
+        run: uv sync --frozen --group dev --python 3.12
+      - name: Run unit tests
+        run: uv run --frozen pytest -q

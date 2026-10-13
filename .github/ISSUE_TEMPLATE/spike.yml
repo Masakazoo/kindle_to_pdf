@@ -1,0 +1,31 @@
+name: "Technology spike / 調査"
+description: "PoC・技術調査を再現可能なタスクに分割する"
+title: "[SPIKE] "
+labels: []
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: "検証したい問い"
+      description: "Go/No-Goを左右する具体的な問い"
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: "検証手順"
+      description: "利用環境、公開資料、最小PoC、再現方法"
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: "合格基準と代替案"
+      description: "GO / CONDITIONAL / NO-GO / UNKNOWNの判定基準"
+    validations:
+      required: true
+  - type: textarea
+    id: safety
+    attributes:
+      label: "セキュリティ・権利・実データの制約"
+      description: "秘密情報・購入本の本文をアップロードしない。利用条件の確認なしに自動DLを有効にしない"

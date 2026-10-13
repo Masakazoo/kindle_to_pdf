@@ -1,0 +1,28 @@
+name: "Bug / 不具合"
+description: "不具合と安全な再現条件"
+title: "[BUG] "
+labels: []
+body:
+  - type: textarea
+    id: observed
+    attributes:
+      label: "実際の動作"
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: "期待する動作"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: "再現手順・環境"
+      description: "書籍名/本文/認証情報/個人情報を含めない"
+    validations:
+      required: true
+  - type: textarea
+    id: severity
+    attributes:
+      label: "影響とデータ保全上のリスク"
