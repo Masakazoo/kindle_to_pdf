@@ -183,14 +183,12 @@ class KindleToPDF:
             window_id: キャプチャ対象のウィンドウID
         """
         output_path = self.screenshots_dir / f"page_{page_num:04d}.png"
-        if window_id:
-            # ウィンドウIDを指定してキャプチャ（非対話モード）
-            cmd = ["screencapture", "-x", "-l", str(window_id), str(output_path)]
-        else:
-            # フォールバック（通常発生しないはずだが、IDなしなら全体or対話）
-            # -w は対話モードになるため避ける。画面全体を撮るかエラーにする。
-            self.log("⚠️ ウィンドウIDがないため、画面全体をキャプチャします")
-            cmd = ["screencapture", "-x", str(output_path)]
+        if not window_id:
+            self.log("❌ KindleウィンドウIDを識別できないため撮影しません")
+            return False
+
+        # 指定ウィンドウのみを撮影し、画面全体へのフォールバックは行わない
+        cmd = ["screencapture", "-x", "-l", str(window_id), str(output_path)]
 
         try:
             subprocess.run(cmd, check=True, timeout=10)
@@ -230,28 +228,25 @@ class KindleToPDF:
         # ただし頻繁なAppleScript呼び出しは遅いので、ループ前に取得する
         window_id = self.get_window_id()
         if not window_id:
-            self.log(
-                "⚠️ ウィンドウIDが取得できませんでした。権限エラーの可能性があります。"
-            )
-            self.log(
-                "⚠️ 全画面キャプチャモードで続行します。Kindleを最前面に保ってください。"
-            )
-            # return 0 を削除し、Noneのまま続行させる
+            self.log("❌ Kindleウィンドウが取得できないため撮影を中止します")
+            return 0
 
         self.log(f"Target Window ID: {window_id}")
 
         for page in range(1, self.total_pages + 1):
-            # スクリーンショット撮影
-            if self.take_screenshot(page, window_id):
-                success_count += 1
+            # 撮影に失敗したらページ送りせず中止する
+            if not self.take_screenshot(page, window_id):
+                self.log(f"❌ ページ {page} の撮影に失敗したため中断します")
+                break
+            success_count += 1
 
-            # 最後のページでなければページめくり
             if page < self.total_pages:
                 self.turn_page()
                 time.sleep(self.page_delay)
 
         self.log("")
-        self.log(f"✅ キャプチャ完了: {success_count}/{self.total_pages} ページ")
+        symbol = "✅" if success_count == self.total_pages else "❌"
+        self.log(f"{symbol} キャプチャ結果: {success_count}/{self.total_pages} ページ")
         return success_count
 
     def convert_to_pdf(self):
@@ -324,8 +319,11 @@ class KindleToPDF:
         # スクリーンショット撮影
         success_count = self.capture_all_pages()
 
-        if success_count == 0:
-            self.log("❌ スクリーンショットが1枚も撮影できませんでした")
+        if success_count != self.total_pages:
+            self.log(
+                f"❌ 撮影枚数が不足しています: {success_count}/{self.total_pages}。"
+                "不完全なPDFは作成しません"
+            )
             return None
 
         # PDF変換
